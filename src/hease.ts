@@ -1,5 +1,14 @@
 import { EASE } from "./ease";
 
+export interface Hease<T extends number | number[]> {
+    onComplete: (callback: Function) => this;
+    onUpdate: (callback: EasingUpdateFunc<T>) => this;
+    update: (progress: number | true) => void;
+    play: () => this
+    complete: () => this
+    stop: () => this
+}
+
 /**
  * 简易刷新器
  */
@@ -44,7 +53,7 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
 
     let timeout: number | NodeJS.Timeout;
 
-    const actions = {
+    const actions: Hease<T> = {
         /**
          * 播放完成事件
          */
