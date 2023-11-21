@@ -1,7 +1,2 @@
-import { EASE } from "./ease"
-import { hease } from "./hease"
-
-export {
-    EASE,
-    hease
-}
+export * from "./ease"
+export * from './hease'
