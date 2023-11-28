@@ -1,12 +1,91 @@
 import { EASE } from "./ease";
+import EE from 'eventemitter3'
 
 export interface Hease<T extends number | number[]> {
+    // [props: string]: any;
     onComplete: (callback: Function) => this;
     onUpdate: (callback: EasingUpdateFunc<T>) => this;
-    update: (progress: number | true) => void;
+    update: (progress: number) => void;
     play: () => this
     complete: () => this
     stop: () => this
+}
+
+
+class _Hease extends EE {
+    constructor(public config: any) {
+        super();
+    }
+
+    /**
+     * 起始状态
+     */
+    from() {
+
+    }
+
+    /**
+     * 目标状态
+     */
+    to() {
+        
+    }
+
+    /**
+     * 缓动函数
+     */
+    ease() {
+
+    }
+
+    /**
+     * 动画时长
+     */
+    duration() {
+
+    }
+
+    /**
+     * 循环次数
+     */
+    repeat() {
+
+    }
+    
+    /**
+     * 播放动画
+     */
+    play() {
+        
+    }
+
+    /**
+     * 暂停动画（时间暂停）
+     */
+    pause() {
+
+    }
+
+    /**
+     * 停止动画，不会触发complete
+     */
+    stop() {
+
+    }
+
+    /**
+     * 立即完成动画
+     */
+    complete() {
+
+    }
+
+    /**
+     * 更新
+     */
+    update() {
+
+    }
 }
 
 /**
@@ -71,11 +150,11 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
         /**
          * 更新
          */
-        update: (progress: number | true) => {
+        update: (progress: number) => {
 
             const data = new Array<number>(len * 2);
 
-            if (progress === true) {
+            if (progress === 1) {
                 for (let i = 0; i < len; i++) {
                     data[i] = t[i];
                     data[len + i] = pieces[i] - lasts[i];
@@ -118,11 +197,12 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
         },
         /**
          * 立即完成
+         * @param boolean sys 是否继续后续流程
          */
         complete: () => {
-            completeCallback && completeCallback();
-            actions.update(true);
+            actions.update(1);
             actions.stop();
+            completeCallback && completeCallback();
             return actions;
         },
         /**
