@@ -1,3 +1,7 @@
+## 一个超级精简的缓动库
+
+内置缓动函数速查表请参考: [https://easings.net/zh-cn](https://easings.net/zh-cn)
+
 ```sh
 npm install hease
 ```
