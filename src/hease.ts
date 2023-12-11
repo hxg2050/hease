@@ -28,7 +28,7 @@ class _Hease extends EE {
      * 目标状态
      */
     to() {
-        
+
     }
 
     /**
@@ -51,12 +51,12 @@ class _Hease extends EE {
     repeat() {
 
     }
-    
+
     /**
      * 播放动画
      */
     play() {
-        
+
     }
 
     /**
