@@ -11,37 +11,45 @@ export interface Hease<T extends number | number[]> {
     stop: () => this
 }
 
+export type HEaseValue = number | number[];
 
-class _Hease extends EE {
-    constructor(public config: any) {
+type en<T, K> = never extends T ? K : never;
+
+
+type a = en<never, number>;
+
+class _Hease<T extends HEaseValue = HEaseValue> extends EE {
+    /**
+     * 起始属性
+     */
+    from: T;
+    /**
+     * 结束属性
+     */
+    to: T;
+    /**
+     * 动画时长
+     */
+    duration = 1000;
+
+    constructor(public config: {
+        from: T,
+        to: T,
+        duration?: number,
+        ease?: (x: number) => number
+    }) {
         super();
-    }
-
-    /**
-     * 起始状态
-     */
-    from() {
-
-    }
-
-    /**
-     * 目标状态
-     */
-    to() {
-
+        this.from = config.from;
+        this.to = config.to;
+        if (Number.isFinite(config.duration)) {
+            this.duration = config.duration!;
+        }
     }
 
     /**
      * 缓动函数
      */
     ease() {
-
-    }
-
-    /**
-     * 动画时长
-     */
-    duration() {
 
     }
 
@@ -88,6 +96,12 @@ class _Hease extends EE {
     }
 }
 
+// const he = new _Hease({
+//     'from': [1],
+//     'to': [1]
+// });
+// const he2 = he.from([1, 2]);//.to(1);
+// he2.to(1);
 /**
  * 简易刷新器
  */
