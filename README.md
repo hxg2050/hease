@@ -35,6 +35,18 @@ ani.complete();
 ani.play(Infinity)
 // ...
 ```
+
+### 如何创建一个yoyo动画？
+```ts
+// 回收时按照时间正向播放
+const ani = hease(0, 1, 2000, EASE.linear);
+```
+```ts
+// 回收时按照时间回溯播放
+const ani = hease(0, 1, 2000, EASE.linear);
+
+```
+`注意`:时间正向和时间回溯的动画效果时不一样的  
 `注意：`无限播放动画将无法触发`onComplete`，但是可以通过手动调用`complete`方法触发
 
 ## 相关API补充

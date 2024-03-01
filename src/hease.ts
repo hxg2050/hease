@@ -84,6 +84,31 @@ export const createUpdate = (fn: (value: number) => void) => {
 }
 
 /**
+ * 当动画运动到终点后，会继续再次以相反的运动方式运动到起点（溜溜球）
+ * @param from 
+ * @param to 
+ * @param duration 
+ * @param ease 
+ */
+export const yoyo = (ease = EASE.linear) => {
+    // 记录方向:1 正向，-1反向
+    let dir: 1 | -1 = -1;
+    // 思路，时间翻倍
+    const easeFn = (x: number) => {
+        if (x === 0) {
+            // 表示应该转向了
+            dir = -1 * dir;
+        }
+        if (dir === 1) {
+            return ease(x);
+        } else {
+            return ease(1 - x);
+        }
+    }
+    return easeFn;
+}
+
+/**
  * 
  * @param from 起始值
  * @param to 目标值
@@ -155,20 +180,20 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
 
             const data = new Array<number>(len * 2);
 
-            if (progress === 1) {
-                for (let i = 0; i < len; i++) {
-                    data[i] = t[i];
-                    data[len + i] = pieces[i] - lasts[i];
-                }
-            } else {
-                const px = ease(progress);
-                for (let i = 0; i < len; i++) {
-                    const nx = px * pieces![i];
-                    data[i] = f[i] + nx;
-                    data[len + i] = nx - lasts[i];
-                    lasts[i] = nx;
-                }
+            // if (progress === 1) {
+            //     for (let i = 0; i < len; i++) {
+            //         data[i] = t[i];
+            //         data[len + i] = pieces[i] - lasts[i];
+            //     }
+            // } else {
+            const px = ease(progress);
+            for (let i = 0; i < len; i++) {
+                const nx = px * pieces![i];
+                data[i] = f[i] + nx;
+                data[len + i] = nx - lasts[i];
+                lasts[i] = nx;
             }
+            // }
 
             if (typeof from === 'number') {
                 (updateCallback! as EasingUpdateFunc<number>)(data[0], data[1]);

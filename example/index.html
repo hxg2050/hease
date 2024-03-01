@@ -6,9 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vite + TS</title>
 </head>
+<style>
+  #app {
+    background-color: #3f4349;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  #block {
+    margin: 20px;
+    margin-left: 0;
+    width: 50px;
+    height: 50px;
+    background-color: #0db34d;
+    border-radius: 25px;
+  }
+</style>
 
 <body>
+
   <div id="app">
+    <div>
+      <select name="" id="eases">
+      </select>
+      <label>
+        <input type="checkbox" id="yoyo" checked /> YOYO
+      </label>
+      <label>
+        <input type="checkbox" id="loop" checked /> Infinity
+      </label>
+    </div>
+    <div id="block"></div>
+    <button id="btn">PLAY</button>
+    <button id="stop">STOP</button>
+    <button id="complete">COMPLETE</button>
   </div>
   <script type="module" src="./index.ts"></script>
 </body>
