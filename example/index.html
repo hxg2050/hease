@@ -13,8 +13,15 @@
     border-radius: 5px;
   }
 
-  #block {
+  .block-bg {
     margin: 20px;
+    padding: 20px 0;
+    background-color: #484c53;
+    border-radius: 5px;
+    width: 550px;
+  }
+
+  #block {
     margin-left: 0;
     width: 50px;
     height: 50px;
@@ -36,7 +43,9 @@
         <input type="checkbox" id="loop" checked /> Infinity
       </label>
     </div>
-    <div id="block"></div>
+    <div class="block-bg">
+      <div id="block"></div>
+    </div>
     <button id="btn">PLAY</button>
     <button id="stop">STOP</button>
     <button id="complete">COMPLETE</button>
