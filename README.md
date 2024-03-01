@@ -28,3 +28,23 @@ ani.stop();
 // 立即完成动画
 ani.complete();
 ```
+### 如何播放无数次动画？
+```ts
+// ...
+// 只需要在播放数传入Infinity
+ani.play(Infinity)
+// ...
+```
+`注意：`无限播放动画将无法触发`onComplete`，但是可以通过手动调用`complete`方法触发
+
+## 相关API补充
+``hease(from: number|number[], to: number|number[], duration = 1000, ease = EASE.linear)``  
+创建一个缓动器  
+``Hease.play()``  
+直接播放1次动画，或者继续播放动画  
+``Hease.play(num: number)``  
+播放num次动画  
+``bindTicker(fn: HeaseTicker)``  
+绑定自定义刷新器  
+``createUpdate(fn: (dt: number) => void)``  
+创建一个刷新运行对象

@@ -1,12 +1,11 @@
 import { EASE } from "./ease";
-import EE from 'eventemitter3'
 
 export interface Hease<T extends number | number[]> {
     // [props: string]: any;
     onComplete: (callback: Function) => this;
     onUpdate: (callback: EasingUpdateFunc<T>) => this;
     update: (progress: number) => void;
-    play: () => this
+    play: (times?: number) => this
     complete: () => this
     stop: () => this
 }
@@ -18,94 +17,19 @@ type en<T, K> = never extends T ? K : never;
 
 type a = en<never, number>;
 
-class _Hease<T extends HEaseValue = HEaseValue> extends EE {
-    /**
-     * 起始属性
-     */
-    from: T;
-    /**
-     * 结束属性
-     */
-    to: T;
-    /**
-     * 动画时长
-     */
-    duration = 1000;
-
-    constructor(public config: {
-        from: T,
-        to: T,
-        duration?: number,
-        ease?: (x: number) => number
-    }) {
-        super();
-        this.from = config.from;
-        this.to = config.to;
-        if (Number.isFinite(config.duration)) {
-            this.duration = config.duration!;
-        }
-    }
-
-    /**
-     * 缓动函数
-     */
-    ease() {
-
-    }
-
-    /**
-     * 循环次数
-     */
-    repeat() {
-
-    }
-
-    /**
-     * 播放动画
-     */
-    play() {
-
-    }
-
-    /**
-     * 暂停动画（时间暂停）
-     */
-    pause() {
-
-    }
-
-    /**
-     * 停止动画，不会触发complete
-     */
-    stop() {
-
-    }
-
-    /**
-     * 立即完成动画
-     */
-    complete() {
-
-    }
-
-    /**
-     * 更新
-     */
-    update() {
-
-    }
-}
-
 // const he = new _Hease({
 //     'from': [1],
 //     'to': [1]
 // });
 // const he2 = he.from([1, 2]);//.to(1);
 // he2.to(1);
+
+export type HeaseTicker = (callback: (dt: number) => void) => () => void
+
 /**
  * 简易刷新器
  */
-const update = (callback: Function) => {
+const update = (callback: Parameters<HeaseTicker>[0]) => {
     let lastTime = performance.now();
     let animationFrame: number;
     const run = () => {
@@ -121,7 +45,43 @@ const update = (callback: Function) => {
     }
 }
 
+let ticker = update;
+
+export const bindTicker = (fn: HeaseTicker) => {
+    ticker = fn;
+}
+
 type EasingUpdateFunc<T> = (newVal: T, dx: T) => void;
+
+export const createUpdate = (fn: (value: number) => void) => {
+    let isPause = false;
+
+    let stopHandler: ReturnType<HeaseTicker> | null = null;
+
+    const stop = () => {
+        isPause = true;
+        stopHandler && stopHandler();
+        stopHandler = null;
+    }
+
+    const play = () => {
+        isPause = false;
+        if (stopHandler) {
+            return;
+        }
+        stopHandler = ticker((x) => {
+            if (!isPause) {
+                fn(x);
+            }
+        });
+    }
+
+    return {
+        play,
+        stop,
+        isPause
+    }
+}
 
 /**
  * 
@@ -142,9 +102,35 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
     let updateCallback: EasingUpdateFunc<T>;
     let completeCallback: Function;
 
-    let stopUpdate: Function;
-
     let timeout: number | NodeJS.Timeout;
+
+    let count = 1;
+
+    let isPause = false;
+
+    let passTime = 0;
+
+    const { play, stop } = createUpdate((dt: number) => {
+        passTime += dt;
+        const progress = Math.min(passTime / duration, 1);
+        actions.update(progress);
+    });
+
+    const finish = () => {
+        if (isPause) {
+            return actions;
+        }
+        actions.update(1);
+        actions.stop();
+        count--;
+        if (count > 0) {
+            passTime = 0;
+            actions.play();
+        } else {
+            actions.complete();
+        }
+        return actions;
+    }
 
     const actions: Hease<T> = {
         /**
@@ -163,6 +149,7 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
         },
         /**
          * 更新
+         * @param progress 进度 0-1
          */
         update: (progress: number) => {
 
@@ -191,21 +178,18 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
         },
         /**
          * 开始
+         * @param times 执行次数
          */
-        play: () => {
-            if (!updateCallback) {
-                return actions;
+        play: (times?: number) => {
+            if (times !== undefined) {
+                count = times;
             }
-            let passTime = 0;
-            stopUpdate = update((dt: number) => {
-                passTime += dt;
-                const progress = Math.min(passTime / duration, 1);
-                actions.update(progress);
-            });
+            play();
 
+            clearTimeout(timeout);
             timeout = setTimeout(() => {
-                actions.complete();
-            }, duration);
+                finish();
+            }, duration - passTime);
 
             return actions;
         },
@@ -216,6 +200,8 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
         complete: () => {
             actions.update(1);
             actions.stop();
+            count = 0;
+            passTime = 0;
             completeCallback && completeCallback();
             return actions;
         },
@@ -223,7 +209,7 @@ export const hease = <T extends number | number[]>(from: T, to: T, duration = 10
          * 停止
          */
         stop: () => {
-            stopUpdate && stopUpdate();
+            stop();
             clearTimeout(timeout);
             return actions;
         }
