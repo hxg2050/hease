@@ -1,13 +1,23 @@
 {
   "name": "hease",
   "private": false,
-  "version": "0.3.2",
+  "version": "0.3.3",
   "repository": "https://github.com/hxg2050/hease.git",
   "license": "MIT",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "type": "module",
+  "keywords": [
+    "ease",
+    "easing",
+    "animation",
+    "tween",
+    "yoyo",
+    "update",
+    "ticker",
+    "game"
+  ],
   "files": [
     "dist/"
   ],
