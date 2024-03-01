@@ -92,10 +92,10 @@ export const createUpdate = (fn: (value: number) => void) => {
  */
 export const yoyo = (ease = EASE.linear) => {
     // 记录方向:1 正向，-1反向
-    let dir: 1 | -1 = -1;
+    let dir: 1 | -1 = 1;
     // 思路，时间翻倍
     const easeFn = (x: number) => {
-        if (x === 0) {
+        if (x === 1) {
             // 表示应该转向了
             dir = -1 * dir;
         }
