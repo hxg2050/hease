@@ -35,20 +35,15 @@ ani.complete();
 ani.play(Infinity)
 // ...
 ```
+`注意：`无限播放动画将无法触发`onComplete`，但是可以通过手动调用`complete`方法触发
 
 ### 如何创建一个yoyo动画？
 ```ts
-// 回收时按照时间正向播放
-const ani = hease(0, 1, 2000, EASE.linear);
+import { hease, EASE, yoyo } from 'hease';
+// 使用内部实现的yoyoy辅助函数
+const ani = hease(0, 1, 2000, yoyo(EASE.linear));
 ```
-```ts
-// 回收时按照时间回溯播放
-const ani = hease(0, 1, 2000, EASE.linear);
-
-```
-`注意`:时间正向和时间回溯的动画效果时不一样的  
-`注意：`无限播放动画将无法触发`onComplete`，但是可以通过手动调用`complete`方法触发
-
+`注意`:时间正向和时间回溯的动画效果时不一样的，内置实现的时按照时间回溯的方式实现的
 ## 相关API补充
 ``hease(from: number|number[], to: number|number[], duration = 1000, ease = EASE.linear)``  
 创建一个缓动器  
